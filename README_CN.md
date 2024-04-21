@@ -73,7 +73,7 @@ DeepBI 支持的数据库连接有:
 - 直接在ubuntu 系统安装,需要将安装redis,postgresql python3.8.17 环境
 - 环境建议
     1. redis 可以直接通过127.0.0.1,无密码命令行访问
-    2. python版本要求3.8+ 建议使用pyenv coda 等虚拟环境
+    2. python版本要求3.8.x 建议使用pyenv coda 等虚拟环境
     3. postgresql 需要安装postgresql-16 版本
 - 下载我们的代码
  ```
@@ -93,7 +93,7 @@ git clone http://github.com/DeepInsight-AI/DeepBI.git
 
 
 ## Contact Us
-<a><img src="https://github.com/DeepInsight-AI/DeepBI/assets/36986406/64916f33-6dbf-445a-aaf7-e4ebb35354fd" width="40%"/></a>
+<a><img src="https://github.com/DeepInsight-AI/DeepBI/assets/151519374/5f3999f6-0d01-4a7f-9b45-5a488b9438f2" width="40%"/></a>
 <br>
 为感谢各位支持，本地化部署完成可以联系群内DeepBI小助手，免费领取Token。
 
