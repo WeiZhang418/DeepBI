@@ -15,6 +15,7 @@ from ai.agents.agentchat import AssistantAgent
 max_retry_times = CONFIG.max_retry_times
 max_report_question = 5
 
+
 class AutopilotStarrocks(Autopilot):
 
     async def deal_question(self, json_str):
@@ -35,7 +36,7 @@ class AutopilotStarrocks(Autopilot):
         print("self.agent_instance_util.api_key_use :", self.agent_instance_util.api_key_use)
 
         if not self.agent_instance_util.api_key_use:
-            re_check = await self.check_api_key()
+            re_check = await self.check_api_key(is_auto_pilot=True)
             if not re_check:
                 return
 
@@ -155,7 +156,6 @@ class AutopilotStarrocks(Autopilot):
 
             question_message = await self.generate_quesiton(q_str, report_file_name)
 
-
             print('question_message :', question_message)
 
             report_html_code['report_thought'] = question_message
@@ -195,7 +195,7 @@ class AutopilotStarrocks(Autopilot):
             await planner_user.initiate_chat(
                 analyst,
                 message=str(
-                    question_list) + '\n' + "这是本次报告的目标：" + '\n' + q_str + '\n' + self.question_ask + '\n' + question_supplement,
+                    question_list) + '\n' + "这是本次报告的目标: " + '\n' + q_str + '\n' + self.question_ask + '\n' + question_supplement,
             )
 
             last_analyst = planner_user.last_message()["content"]
@@ -296,7 +296,6 @@ class AutopilotStarrocks(Autopilot):
                                 else:
                                     print("对象已存在，不重复插入")
 
-
                         else:
                             # String instantiated as object
                             report_demand_list = ast.literal_eval(chart_code_str)
@@ -331,7 +330,7 @@ class AutopilotStarrocks(Autopilot):
                     # mysql_echart_assistant = self.agent_instance_util.get_agent_mysql_echart_assistant35(
                     #     use_cache=use_cache, report_file_name=report_file_name)
                     python_executor = self.agent_instance_util.get_agent_python_executor(
-                        report_file_name=report_file_name)
+                        report_file_name=report_file_name, is_auto_pilot=True)
 
                     await python_executor.initiate_chat(
                         mysql_echart_assistant,
@@ -368,7 +367,7 @@ class AutopilotStarrocks(Autopilot):
 
                                         for jstr in report_demand_list:
                                             if str(jstr).__contains__('echart_name') and str(jstr).__contains__(
-                                                'echart_code'):
+                                                    'echart_code'):
                                                 base_content.append(jstr)
                                     else:
                                         # String instantiated as object
@@ -376,14 +375,13 @@ class AutopilotStarrocks(Autopilot):
                                         print("report_demand_list: ", report_demand_list)
                                         for jstr in report_demand_list:
                                             if str(jstr).__contains__('echart_name') and str(jstr).__contains__(
-                                                'echart_code'):
+                                                    'echart_code'):
                                                 base_content.append(jstr)
 
                     print("base_content: ", base_content)
                     base_mess = []
                     base_mess.append(answer_message)
                     break
-
 
                 except Exception as e:
                     traceback.print_exc()
@@ -437,7 +435,7 @@ class AutopilotStarrocks(Autopilot):
                     question_supplement = 'Please make an analysis and summary in English, including which charts were generated, and briefly introduce the contents of these charts.'
                     if self.language_mode == CONFIG.language_chinese:
                         question_supplement = qustion_message + ".  请用中文帮我分析以上的报表数据，给我有价值的结论"
-                        print("question_supplement ：", question_supplement)
+                        print("question_supplement : ", question_supplement)
 
                     await planner_user.initiate_chat(
                         analyst,

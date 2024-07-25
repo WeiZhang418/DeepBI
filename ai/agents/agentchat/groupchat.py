@@ -64,7 +64,8 @@ Then select the next role from {self.agent_names} to play. Only return the role.
                 }
             ]
         )
-
+        if last_speaker.name not in self.agent_names:
+            last_speaker = self.agents[-1]
         if not final:
             # i = self._random.randint(0, len(self._agent_names) - 1)  # randomly pick an id
             return self.next_agent(last_speaker)
@@ -108,7 +109,7 @@ class GroupChatManager(ConversableAgent):
             sender: Optional[Agent] = None,
             config: Optional[GroupChat] = None,
     ) -> Union[str, Dict, None]:
-        """Run a group chat."""
+        """Run a group chat.   mysql_engineer, bi_proxy, chart_presenter"""
         if messages is None:
             messages = self._oai_messages[sender]
         message = messages[-1]

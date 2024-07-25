@@ -650,7 +650,10 @@ class BIProxyAgent(Agent):
 
         # TODO: #1143 handle token limit exceeded error
         response = oai.ChatCompletion.create(
-            context=messages[-1].pop("context", None), messages=self._oai_system_message + messages, **llm_config
+            context=messages[-1].pop("context", None),
+            messages=self._oai_system_message + messages,
+            agent_name=self.name,
+            **llm_config
         )
 
         return True, oai.ChatCompletion.extract_text_or_function_call(response)[0]
@@ -1194,7 +1197,7 @@ class BIProxyAgent(Agent):
 
                 for config in str_obj:
                     if 'columnMapping' in config and isinstance(config['columnMapping'], dict) and config[
-                        'columnMapping']:
+                            'columnMapping']:
                         for variable, axis in config['columnMapping'].items():
                             print('axis :', axis)
                             if axis in ["x"]:
@@ -1401,7 +1404,6 @@ class BIProxyAgent(Agent):
                 "from user:[{}".format(self.user_name) + "] , " + self.name + " send a message:{}".format(
                     send_json_str))
 
-
         except Exception as e:
             traceback.print_exc()
             logger.error("from user:[{}".format(self.user_name) + "] , " + str(e))
@@ -1472,12 +1474,12 @@ class BIProxyAgent(Agent):
                 "from user:[{}".format(
                     self.user_name) + "] , " + self.name + " send a message:{}".format(
                     send_json_str))
-            return name + "：" + img_url + " , generated successfully"
+            return name + ": " + img_url + " , generated successfully"
         except Exception as e:
             traceback.print_exc()
             logger.error("from user:[{}".format(self.user_name) + "] , " + str(e))
 
-        return name + "：" + img_url + " , generation failed"
+        return name + ": " + img_url + " , generation failed"
         # return "Failed to generate chart. Please check whether the data format is correct"
 
     async def run_echart_code(self, chart_code_str: str, name: str):
@@ -1491,7 +1493,7 @@ class BIProxyAgent(Agent):
                 str_obj = ast.literal_eval(chart_code_str)
 
             if isinstance(str_obj, list):
-                return "Chart ：" + name + " configuration should not be a list."
+                return "Chart : " + name + " configuration should not be a list."
 
             json_str = json.dumps(str_obj)
 
@@ -1509,17 +1511,18 @@ class BIProxyAgent(Agent):
             websocket = self.websocket
 
             send_json_str = json.dumps(result_message)
-            await websocket.send(send_json_str)
+            if websocket and send_json_str:
+                await websocket.send(send_json_str)
             print(str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + ' ---- ' + " send a message:{}".format(
                 send_json_str))
             logger.info(
                 "from user:[{}".format(
                     self.user_name) + "] , " + self.name + " send a message:{}".format(
                     send_json_str))
-            return "Chart ：" + name + " generated successfully"
+            return "Chart : " + name + " generated successfully"
         except Exception as e:
             traceback.print_exc()
             logger.error("from user:[{}".format(self.user_name) + "] , " + str(e))
 
-        return "Chart ：" + name + " generation failed"
+        return "Chart : " + name + " generation failed"
         # return "Failed to generate chart. Please check whether the data format is correct"

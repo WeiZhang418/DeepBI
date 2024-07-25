@@ -36,7 +36,7 @@ class AutopilotMysql(Autopilot):
         print("self.agent_instance_util.api_key_use :", self.agent_instance_util.api_key_use)
 
         if not self.agent_instance_util.api_key_use:
-            re_check = await self.check_api_key()
+            re_check = await self.check_api_key(is_auto_pilot=True)
             if not re_check:
                 return
 
@@ -151,7 +151,7 @@ class AutopilotMysql(Autopilot):
             await planner_user.initiate_chat(
                 analyst,
                 message=str(
-                    question_list) + '\n' + " This is the goal of this report：" + '\n' + q_str + '\n' + LanguageInfo.question_ask + '\n' + question_supplement,
+                    question_list) + '\n' + " This is the goal of this report: " + '\n' + q_str + '\n' + LanguageInfo.question_ask + '\n' + question_supplement,
             )
 
             last_analyst = planner_user.last_message()["content"]
@@ -270,7 +270,7 @@ class AutopilotMysql(Autopilot):
                     mysql_echart_assistant = self.agent_instance_util.get_agent_mysql_echart_assistant(
                         use_cache=use_cache, report_file_name=report_file_name)
                     python_executor = self.agent_instance_util.get_agent_python_executor(
-                        report_file_name=report_file_name)
+                        report_file_name=report_file_name, is_auto_pilot=True)
 
                     await python_executor.initiate_chat(
                         mysql_echart_assistant,
@@ -307,7 +307,7 @@ class AutopilotMysql(Autopilot):
 
                                         for jstr in report_demand_list:
                                             if str(jstr).__contains__('echart_name') and str(jstr).__contains__(
-                                                'echart_code'):
+                                                    'echart_code'):
                                                 base_content.append(jstr)
                                     else:
                                         # String instantiated as object
@@ -315,14 +315,13 @@ class AutopilotMysql(Autopilot):
                                         print("report_demand_list: ", report_demand_list)
                                         for jstr in report_demand_list:
                                             if str(jstr).__contains__('echart_name') and str(jstr).__contains__(
-                                                'echart_code'):
+                                                    'echart_code'):
                                                 base_content.append(jstr)
 
                     print("base_content: ", base_content)
                     base_mess = []
                     base_mess.append(answer_message)
                     break
-
 
                 except Exception as e:
                     traceback.print_exc()
@@ -374,7 +373,7 @@ class AutopilotMysql(Autopilot):
                     analyst = self.get_agent_analyst(report_file_name=report_file_name)
 
                     question_supplement = qustion_message + '\n' + "Analyze the above report data and give me valuable conclusions"
-                    print("question_supplement ：", question_supplement)
+                    print("question_supplement : ", question_supplement)
 
                     await planner_user.initiate_chat(
                         analyst,
